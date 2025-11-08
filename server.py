@@ -22,7 +22,7 @@ def start_background_once():
             background_started = True
 
 # initialize DB on import (so it works under gunicorn)
-init_database()
+
 
 @app.before_first_request
 def _start_bg():
