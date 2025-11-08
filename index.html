@@ -5,7 +5,32 @@
 <title>ISS Tracker Dashboard</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-/* (Keep all your existing CSS) */
+  :root { --bg:#0b1220; --panel:#111a2b; --text:#e8eaf6; --muted:#a9b0c7; --brand:#667eea; }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+  .main-container{max-width:1200px;margin:0 auto;padding:20px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .logo{display:flex;gap:12px;align-items:center}
+  .logo-text h1{margin:0;font-size:28px}
+  .logo-text p{margin:0;color:var(--muted)}
+  .live-badge{display:flex;gap:8px;align-items:center;background:rgba(255,0,0,.1);border:1px solid rgba(255,0,0,.3);padding:6px 10px;border-radius:999px;font-weight:600}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#f87171;box-shadow:0 0 0 4px rgba(248,113,113,.2)}
+  .content-wrapper{display:grid;grid-template-columns:1.7fr 1fr;gap:16px}
+  .map-container{height:520px;background:var(--panel);border:1px solid #1f2a44;border-radius:12px;overflow:hidden}
+  #map{height:100%}
+  .analytics-sidebar{display:flex;flex-direction:column;gap:16px}
+  .section{background:var(--panel);border:1px solid #1f2a44;border-radius:12px;padding:14px}
+  .section-header{font-weight:700;margin-bottom:10px;color:#cdd4f5}
+  .controls input[type="range"]{width:100%}
+  .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .metric-box{background:#0e1729;border:1px solid #20304f;border-radius:10px;padding:10px}
+  .metric-label{font-size:12px;color:var(--muted)}
+  .metric-value{font-size:18px;font-weight:700}
+  .data-table table{width:100%;border-collapse:collapse}
+  .data-table th,.data-table td{padding:8px;border-bottom:1px solid #1f2a44;font-size:13px}
+  .empty-state{color:var(--muted);text-align:center}
+  @media(max-width:1000px){.content-wrapper{grid-template-columns:1fr}}
+</style>
+
 </style>
 </head>
 <body>
