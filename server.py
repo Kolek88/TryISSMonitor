@@ -11,6 +11,18 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+# after: app = Flask(__name__); CORS(app)
+background_started = False
+bg_lock = threading.Lock()
+
+def start_background_once():
+    """Start the updater thread exactly once per process."""
+    global background_started
+    with bg_lock:
+        if not background_started:
+            threading.Thread(target=background_update, daemon=True).start()
+            background_started = True
+
 background_started = False
 bg_lock = threading.Lock()
 
@@ -172,6 +184,11 @@ def get_stats():
     except Exception as e:
         print(f"Error fetching stats: {e}")
         return jsonify({'error': 'Unable to fetch stats'}), 500
+        
+# Ensure DB exists and background updater is running
+init_database()
+start_background_once()
+
 
 # ------------------ START ------------------ #
 '''if __name__ == '__main__':
@@ -180,7 +197,8 @@ def get_stats():
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port, debug=False)'''
 if __name__ == '__main__':
-    start_background_once()  # start updater locally
+    # already safe if called twice; guarded by the flag
+    start_background_once()
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port, debug=False)
 
