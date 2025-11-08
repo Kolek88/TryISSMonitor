@@ -11,6 +11,24 @@ import os
 app = Flask(__name__)
 CORS(app)
 
+background_started = False
+bg_lock = threading.Lock()
+
+def start_background_once():
+    global background_started
+    with bg_lock:
+        if not background_started:
+            threading.Thread(target=background_update, daemon=True).start()
+            background_started = True
+
+# initialize DB on import (so it works under gunicorn)
+init_database()
+
+@app.before_first_request
+def _start_bg():
+    start_background_once()
+
+
 DB_NAME = 'iss_data.db'
 UPDATE_INTERVAL = 5  # seconds
 MAX_DAYS = 3  # keep 3 days of data
@@ -156,9 +174,13 @@ def get_stats():
         return jsonify({'error': 'Unable to fetch stats'}), 500
 
 # ------------------ START ------------------ #
-if __name__ == '__main__':
+'''if __name__ == '__main__':
     init_database()
     threading.Thread(target=background_update, daemon=True).start()
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)'''
+if __name__ == '__main__':
+    start_background_once()  # start updater locally
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port, debug=False)
 
